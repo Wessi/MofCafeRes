@@ -1,0 +1,490 @@
+Sub ShapeClick()
+    Dim clickedShape As Shape
+    Set clickedShape = ActiveSheet.Shapes(Application.Caller)
+    
+    Dim originalColor As Long
+    originalColor = clickedShape.Fill.ForeColor.RGB  ' Store original color
+
+    ' Change color temporarily
+    clickedShape.Fill.ForeColor.RGB = RGB(0, 128, 128)  ' Example color
+
+    ' Delay for visual effect
+    Dim endTime As Double
+    endTime = Timer + 0.1  ' Half-second delay
+    Do While Timer < endTime
+        DoEvents  ' Keep Excel responsive
+    Loop
+    
+    ' Validate start
+    Dim dateValue As String
+    Dim b2Value As Variant
+    Dim c2Value As Variant
+    dateValue = Trim(Sheets("Ledger").Range("A2").Value) ' Trimming the value
+    b2Value = Trim(Sheets("Ledger").Range("B2").Value)
+    c2Value = Trim(Sheets("Ledger").Range("C2").Value)
+    
+    Dim isDateValid As Boolean: isDateValid = IsValidDateFormat(dateValue)
+    Dim isB2Valid As Boolean: isB2Valid = isValidB2(b2Value)
+    Dim isC2Valid As Boolean: isC2Valid = isValidC2(c2Value)
+    
+    If isDateValid And isB2Valid And isC2Valid Then
+        ' All conditions are met
+        Dim confirmed As Boolean
+        confirmed = ConfirmAction(clickedShape.Name)  ' Custom function to confirm action
+
+        If confirmed Then
+            Select Case clickedShape.Name
+                Case "SaveButton"
+                    ' Insert2DB
+                    MsgBox "Data inserted successfully.", vbInformation, "Insertion Complete"
+                Case "ResetButton"
+                    MsgBox "Data reset successfully.", vbInformation, "Reset Complete"
+                ' ... other cases for different buttons
+            End Select
+        Else
+            MsgBox "Action cancelled.", vbExclamation, "Cancelled"
+        End If
+
+    Else
+    
+        ' Ken
+        Dim amharicWord As String
+        amharicWord = ChrW(&H12C0) & ChrW(&H1295)
+
+        ' Build the error message for invalid fields
+        Dim errorMsg As String
+        errorMsg = " áŠ¥á‰£áŠ®áŠ• á‰µáŠ­áŠ­áˆˆáŠ› : "
+
+        If Not isDateValid Then
+            ' errorMsg = errorMsg & "á‰€áŠ•, "
+            errorMsg = errorMsg & amharicWord
+        End If
+        If Not isB2Valid Then
+            errorMsg = errorMsg & "áˆáŠ­áŠ•á‹«á‰µ, "
+        End If
+        If Not isC2Valid Then
+            errorMsg = errorMsg & "RV.JV á‰áŒ¥áˆ­, "
+        End If
+
+        ' Remove the trailing comma and space from the string
+        errorMsg = Left(errorMsg, Len(errorMsg) - 2) & " " & "á‹«áˆµáŒˆá‰¡ ::" & " "
+        MsgBox errorMsg, vbCritical
+    End If
+
+    ' Revert to original color
+    clickedShape.Fill.ForeColor.RGB = originalColor
+End Sub
+
+Function ConfirmAction(buttonName As String) As Boolean
+    Dim response As Integer
+    response = MsgBox("Are you sure you want to perform this action (" & buttonName & ")?", vbYesNo + vbQuestion, "Confirm Action")
+    ConfirmAction = (response = vbYes)
+End Function
+
+Function IsValidDateFormat(dateStr As String) As Boolean
+    Dim dayPart As String
+    Dim monthPart As String
+    Dim yearPart As String
+    Dim dateParts() As String
+    
+    dateParts = Split(dateStr, "/")
+    
+    ' Ensure there are three parts: day, month, and year
+    If UBound(dateParts) = 2 Then
+        dayPart = dateParts(0)
+        monthPart = dateParts(1)
+        yearPart = dateParts(2)
+
+        ' Check if day and month are numeric and 1 or 2 digits, and year is numeric and exactly 4 digits
+        If IsNumeric(dayPart) And IsNumeric(monthPart) And IsNumeric(yearPart) And _
+           Len(dayPart) <= 2 And Len(monthPart) <= 2 And Len(Trim(yearPart)) = 4 And _
+           CInt(yearPart) >= 2000 And CInt(yearPart) <= 2025 Then
+           
+            ' Convert parts to numbers for further validation
+            Dim dayNum As Integer, monthNum As Integer, yearNum As Integer
+            dayNum = CInt(dayPart)
+            monthNum = CInt(monthPart)
+            yearNum = CInt(yearPart)
+
+            ' Validate day for months 1-12
+            If monthNum >= 1 And monthNum <= 12 Then
+                IsValidDateFormat = (dayNum >= 1 And dayNum <= 30)
+            ' Validate day for the 13th month
+            ElseIf monthNum = 13 Then
+                IsValidDateFormat = (dayNum >= 1 And dayNum <= 6)
+            Else
+                IsValidDateFormat = False
+            End If
+        Else
+            IsValidDateFormat = False
+        End If
+    Else
+        IsValidDateFormat = False
+    End If
+End Function
+
+Function isValidB2(valueB2 As Variant) As Boolean
+    isValidB2 = (Not IsEmpty(valueB2)) And (Trim(valueB2) <> "")
+End Function
+
+Function isValidC2(valueC2 As Variant) As Boolean
+    isValidC2 = (Not IsEmpty(valueC2)) And (Trim(valueC2) <> "")
+End Function
+
+
+
+' with userform
+If False Then
+Sub ShapeClick()
+    Dim clickedShape As Shape
+    Set clickedShape = ActiveSheet.Shapes(Application.Caller)
+    
+    Dim originalColor As Long
+    originalColor = clickedShape.Fill.ForeColor.RGB  ' Store original color
+
+    ' Change color temporarily
+    clickedShape.Fill.ForeColor.RGB = RGB(0, 128, 128)  ' Example color
+
+    ' Delay for visual effect
+    Dim endTime As Double
+    endTime = Timer + 0.1  ' Half-second delay
+    Do While Timer < endTime
+        DoEvents  ' Keep Excel responsive
+    Loop
+    
+    ' Validate start
+    Dim dateValue As String
+    Dim b2Value As Variant
+    Dim c2Value As Variant
+    dateValue = Trim(Sheets("Ledger").Range("A2").Value) ' Trimming the value
+    b2Value = Trim(Sheets("Ledger").Range("B2").Value)
+    c2Value = Trim(Sheets("Ledger").Range("C2").Value)
+    
+    Dim isDateValid As Boolean: isDateValid = IsValidDateFormat(dateValue)
+    Dim isB2Valid As Boolean: isB2Valid = isValidB2(b2Value)
+    Dim isC2Valid As Boolean: isC2Valid = isValidC2(c2Value)
+    
+    If isDateValid And isB2Valid And isC2Valid Then
+        ' All conditions are met
+        Dim confirmed As Boolean
+        confirmed = ConfirmAction(clickedShape.Name)  ' Custom function to confirm action
+
+        If confirmed Then
+            Select Case clickedShape.Name
+                Case "SaveButton"
+                    ' Insert2DB
+                    ShowMessageForm "Data inserted successfully."
+                Case "ResetButton"
+                    ShowMessageForm "Data reset successfully."
+                ' ... other cases for different buttons
+            End Select
+        Else
+            ShowMessageForm "Action cancelled."
+        End If
+
+    Else
+    
+        ' Unicode start
+        
+        Dim ebakon As String
+        ebakon = ChrW(&H12A5) & ChrW(&H1263) & ChrW(&H12AE) & ChrW(&H1295)
+        
+        Dim yegebinawechizirzirmikniat As String
+        yegebinawechizirzirmikniat = ChrW(&H12E8) & ChrW(&H1308) & ChrW(&H1262) & ChrW(&H1293) & ChrW(&H20) & _
+                                     ChrW(&H12C8) & ChrW(&H132A) & ChrW(&H20) & ChrW(&H12DD) & ChrW(&H122D) & _
+                                     ChrW(&H12DD) & ChrW(&H122D) & ChrW(&H20) & ChrW(&H121D) & ChrW(&H12AD) & _
+                                     ChrW(&H1292) & ChrW(&H12EB) & ChrW(&H1275)
+        
+        Dim ken As String
+        ken = ChrW(&H1240) & ChrW(&H1295)
+        
+        Dim kuter As String
+        kuter = ChrW(&H1241) & ChrW(&H1325) & ChrW(&H122D)
+        
+        Dim betikikil As String
+        betikikil = ChrW(&H1260) & ChrW(&H1275) & ChrW(&H12AD) & ChrW(&H12AD) & ChrW(&H120D)
+        
+        Dim yasgebu As String
+        yasgebu = ChrW(&H12EB) & ChrW(&H1235) & ChrW(&H1308) & ChrW(&H1261)
+        
+        Dim aratnetib As String
+        aratnetib = ChrW(&H1362)
+        
+        Dim netelaserez As String
+        netelaserez = ChrW(&H1363)
+        
+        ' Unicode end
+        
+        ' Build the error message for invalid fields
+        Dim errorMsg As String
+        errorMsg = ebakon & " "
+        
+        If Not isDateValid Then
+            errorMsg = errorMsg & ken & netelaserez
+        End If
+        If Not isB2Valid Then
+            errorMsg = errorMsg & "RV.JV " & kuter & netelaserez
+        End If
+        If Not isC2Valid Then
+            errorMsg = errorMsg & yegebinawechizirzirmikniat & netelaserez
+        End If
+        
+        ' Remove the trailing comma and space from the string
+        errorMsg = errorMsg & betikikil & " " & yasgebu & aratnetib
+        ShowMessageForm errorMsg
+
+    End If
+
+    ' Revert to original color
+    clickedShape.Fill.ForeColor.RGB = originalColor
+End Sub
+
+Function ConfirmAction(buttonName As String) As Boolean
+    Dim response As Integer
+    response = MsgBox("Are you sure you want to perform this action (" & buttonName & ")?", vbYesNo + vbQuestion, "Confirm Action")
+    ConfirmAction = (response = vbYes)
+End Function
+
+Function IsValidDateFormat(dateStr As String) As Boolean
+    Dim dayPart As String
+    Dim monthPart As String
+    Dim yearPart As String
+    Dim dateParts() As String
+    
+    dateParts = Split(dateStr, "/")
+    
+    ' Ensure there are three parts: day, month, and year
+    If UBound(dateParts) = 2 Then
+        dayPart = dateParts(0)
+        monthPart = dateParts(1)
+        yearPart = dateParts(2)
+
+        ' Check if day and month are numeric and 1 or 2 digits, and year is numeric and exactly 4 digits
+        If IsNumeric(dayPart) And IsNumeric(monthPart) And IsNumeric(yearPart) And _
+           Len(dayPart) <= 2 And Len(monthPart) <= 2 And Len(Trim(yearPart)) = 4 And _
+           CInt(yearPart) >= 2000 And CInt(yearPart) <= 2025 Then
+           
+            ' Convert parts to numbers for further validation
+            Dim dayNum As Integer, monthNum As Integer, yearNum As Integer
+            dayNum = CInt(dayPart)
+            monthNum = CInt(monthPart)
+            yearNum = CInt(yearPart)
+
+            ' Validate day for months 1-12
+            If monthNum >= 1 And monthNum <= 12 Then
+                IsValidDateFormat = (dayNum >= 1 And dayNum <= 30)
+            ' Validate day for the 13th month
+            ElseIf monthNum = 13 Then
+                IsValidDateFormat = (dayNum >= 1 And dayNum <= 6)
+            Else
+                IsValidDateFormat = False
+            End If
+        Else
+            IsValidDateFormat = False
+        End If
+    Else
+        IsValidDateFormat = False
+    End If
+End Function
+
+Function isValidB2(valueB2 As Variant) As Boolean
+    isValidB2 = (Not IsEmpty(valueB2)) And (Trim(valueB2) <> "")
+End Function
+
+Function isValidC2(valueC2 As Variant) As Boolean
+    isValidC2 = (Not IsEmpty(valueC2)) And (Trim(valueC2) <> "")
+End Function
+
+Public Sub ShowMessageForm(msg As String)
+    With UserForm1  ' Replace 'UserForm1' with the actual name of your UserForm
+        .lblMessage.Caption = msg
+        .Show
+    End With
+End Sub
+####################################################################
+' with reset button
+Public UserFormResponse As Boolean
+
+Sub ShapeClick()
+    Dim clickedShape As Shape
+    Set clickedShape = ActiveSheet.Shapes(Application.Caller)
+    
+    Dim originalColor As Long
+    originalColor = clickedShape.Fill.ForeColor.RGB  ' Store original color
+
+    ' Change color temporarily
+    clickedShape.Fill.ForeColor.RGB = 8421376 'RGB(0, 128, 128)  ' Example color
+
+    ' Delay for visual effect
+    Dim endTime As Double
+    endTime = Timer + 0.1  ' Half-second delay
+    Do While Timer < endTime
+        DoEvents  ' Keep Excel responsive
+    Loop
+    
+    ' Validate start
+    Dim dateValue As String
+    Dim b2Value As Variant
+    Dim c2Value As Variant
+    dateValue = Trim(Sheets("Ledger").Range("A2").Value) ' Trimming the value
+    b2Value = Trim(Sheets("Ledger").Range("B2").Value)
+    c2Value = Trim(Sheets("Ledger").Range("C2").Value)
+    
+    Dim isDateValid As Boolean: isDateValid = IsValidDateFormat(dateValue)
+    Dim isB2Valid As Boolean: isB2Valid = isValidB2(b2Value)
+    Dim isC2Valid As Boolean: isC2Valid = isValidC2(c2Value)
+    
+    If isDateValid And isB2Valid And isC2Valid Then
+        ' All conditions are met
+        Dim confirmed As Boolean
+        confirmed = ConfirmAction(clickedShape.Name)  ' Custom function to confirm action
+
+        If confirmed Then
+            Select Case clickedShape.Name
+                Case "SaveButton"
+                    ' Insert2DB
+                    ShowMessageForm "Data inserted successfully."
+                Case "ResetButton"
+                    ResetValues
+                    ShowMessageForm "Values reset successfully."
+                ' ... other cases for different buttons
+            End Select
+        Else
+            ShowMessageForm "Action cancelled."
+        End If
+
+    Else
+    
+        ' Unicode start
+        
+        Dim ebakon As String
+        ebakon = ChrW(&H12A5) & ChrW(&H1263) & ChrW(&H12AE) & ChrW(&H1295)
+        
+        Dim yegebinawechizirzirmikniat As String
+        yegebinawechizirzirmikniat = ChrW(&H12E8) & ChrW(&H1308) & ChrW(&H1262) & ChrW(&H1293) & ChrW(&H20) & _
+                                     ChrW(&H12C8) & ChrW(&H132A) & ChrW(&H20) & ChrW(&H12DD) & ChrW(&H122D) & _
+                                     ChrW(&H12DD) & ChrW(&H122D) & ChrW(&H20) & ChrW(&H121D) & ChrW(&H12AD) & _
+                                     ChrW(&H1292) & ChrW(&H12EB) & ChrW(&H1275)
+        
+        Dim ken As String
+        ken = ChrW(&H1240) & ChrW(&H1295)
+        
+        Dim kuter As String
+        kuter = ChrW(&H1241) & ChrW(&H1325) & ChrW(&H122D)
+        
+        Dim betikikil As String
+        betikikil = ChrW(&H1260) & ChrW(&H1275) & ChrW(&H12AD) & ChrW(&H12AD) & ChrW(&H120D)
+        
+        Dim yasgebu As String
+        yasgebu = ChrW(&H12EB) & ChrW(&H1235) & ChrW(&H1308) & ChrW(&H1261)
+        
+        Dim aratnetib As String
+        aratnetib = ChrW(&H1362)
+        
+        Dim netelaserez As String
+        netelaserez = ChrW(&H1363)
+        
+        ' Unicode end
+        
+        ' Build the error message for invalid fields
+        Dim errorMsg As String
+        errorMsg = ebakon & " "
+        
+        If Not isDateValid Then
+            errorMsg = errorMsg & ken & " " & netelaserez
+        End If
+        If Not isB2Valid Then
+            errorMsg = errorMsg & " " & yegebinawechizirzirmikniat & " " & netelaserez
+        End If
+        If Not isC2Valid Then
+            errorMsg = errorMsg & " RV.JV " & kuter & " " & netelaserez
+        End If
+        
+        ' Remove the trailing comma and space from the string
+        errorMsg = errorMsg & " " & betikikil & " " & yasgebu & aratnetib
+        ShowMessageForm errorMsg
+
+    End If
+
+    ' Revert to original color
+    clickedShape.Fill.ForeColor.RGB = originalColor
+End Sub
+
+Function ConfirmAction(buttonName As String) As Boolean
+    With UserFormConfirm
+        .lblConfirmMessage.Caption = "Are you sure you want to perform this action (" & buttonName & ")?"
+        .Show
+    End With
+    ConfirmAction = UserFormResponse
+End Function
+
+
+Function IsValidDateFormat(dateStr As String) As Boolean
+    Dim dayPart As String
+    Dim monthPart As String
+    Dim yearPart As String
+    Dim dateParts() As String
+    
+    dateParts = Split(dateStr, "/")
+    
+    ' Ensure there are three parts: day, month, and year
+    If UBound(dateParts) = 2 Then
+        dayPart = dateParts(0)
+        monthPart = dateParts(1)
+        yearPart = dateParts(2)
+
+        ' Check if day and month are numeric and 1 or 2 digits, and year is numeric and exactly 4 digits
+        If IsNumeric(dayPart) And IsNumeric(monthPart) And IsNumeric(yearPart) And _
+           Len(dayPart) <= 2 And Len(monthPart) <= 2 And Len(Trim(yearPart)) = 4 And _
+           CInt(yearPart) >= 2000 And CInt(yearPart) <= 2025 Then
+           
+            ' Convert parts to numbers for further validation
+            Dim dayNum As Integer, monthNum As Integer, yearNum As Integer
+            dayNum = CInt(dayPart)
+            monthNum = CInt(monthPart)
+            yearNum = CInt(yearPart)
+
+            ' Validate day for months 1-12
+            If monthNum >= 1 And monthNum <= 12 Then
+                IsValidDateFormat = (dayNum >= 1 And dayNum <= 30)
+            ' Validate day for the 13th month
+            ElseIf monthNum = 13 Then
+                IsValidDateFormat = (dayNum >= 1 And dayNum <= 6)
+            Else
+                IsValidDateFormat = False
+            End If
+        Else
+            IsValidDateFormat = False
+        End If
+    Else
+        IsValidDateFormat = False
+    End If
+End Function
+
+Function isValidB2(valueB2 As Variant) As Boolean
+    isValidB2 = (Not IsEmpty(valueB2)) And (Trim(valueB2) <> "")
+End Function
+
+Function isValidC2(valueC2 As Variant) As Boolean
+    isValidC2 = (Not IsEmpty(valueC2)) And (Trim(valueC2) <> "")
+End Function
+
+Public Sub ShowMessageForm(msg As String)
+    With UserForm1  ' Replace 'UserForm1' with the actual name of your UserForm
+        .lblMessage.Caption = msg
+        .Show
+    End With
+End Sub
+
+Sub ResetValues()
+    With Sheets("Ledger")
+        .Range("A2").ClearContents
+        .Range("B2").ClearContents
+        .Range("C2").ClearContents
+        .Range("C4").ClearContents
+    End With
+End Sub
+
+
+
+
