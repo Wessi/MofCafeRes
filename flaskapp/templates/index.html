@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafeteria Management System</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+
+    <style>
+        html, body {
+            height: 100%; /* Ensures html and body take up full viewport height */
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            padding-top: 30px; /* Height of the header */
+            padding-bottom: 30px; /* Height of the footer */
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Ensures minimum height of viewport */
+        }
+
+        .container.py-4.content {
+            flex: 1; /* Allows this container to expand and fill available space */
+        }
+
+        .footer {
+            color: #FFFFFF;
+            text-align: center;
+            padding: 10px 0;
+            width: 100%;
+            height: 40px;
+            z-index: 1000;
+            background-image: url('/static/img2.png');
+            background-size: cover;
+            background-position: center;
+            background-color: #333; /* Fallback color */
+        }
+
+        .link-card {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .link-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .link-card a {
+            text-decoration: none;
+            font-size: 1.5rem;
+            color: #4a69bd;
+            transition: color 0.3s ease;
+        }
+        .link-card a:hover {
+            color: #333;
+        }
+
+        .header-bar {
+            color: #FF0000;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 60px;
+            z-index: 1000;
+            background-image: url('/static/img.png');
+            background-size: cover;
+            background-position: center;
+            background-color: #4a69bd; /* Fallback color */
+            display: flex; /* Added for flexbox */
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            padding: 0; /* Removed padding */
+        }
+
+<!--        .header-bar-text {-->
+<!--            /*font-weight: 700;Makes the text bold */-->
+<!--            margin: 0; /* Adjust or remove margin if needed */-->
+<!--        }-->
+
+         .header-bar-text h2 {
+            font-weight: bold; /* Bold the h2 specifically */
+            margin: 0; /* Remove any default margins */
+        }
+
+        @media only screen and (max-width: 768px) {
+            .header-bar {
+                padding: 15px 0;
+            }
+            .footer {
+                padding: 15px 0;
+            }
+        }
+        @media only screen and (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .header-bar {
+                background-image: url('/static/img.png');
+            }
+            .footer {
+                background-image: url('/static/img2.png');
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <div class="container header-bar-text">
+            <h2>Cafeteria Management System</h2>
+        </div>
+    </div>
+    <div class="container py-4 content">
+        <div class="link-card">
+            <a href="transactionForm.html">Transaction Entry</a>
+        </div>
+        <div class="link-card">
+            <a href="inventoryManagement.html">Inventory Management</a>
+        </div>
+        <div class="link-card">
+            <a href="dailySummary.html">Daily Summary</a>
+        </div>
+        <div class="link-card">
+            <a href="employeeInformation.html">Employee Information</a>
+        </div>
+        <div class="link-card">
+            <a href="reportGeneration.html">Generate Reports</a>
+        </div>
+    </div>
+    <div class="footer">
+        <p>© 2024 MoF Cafeteria Management System | Contact Us </p>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

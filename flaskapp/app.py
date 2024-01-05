@@ -1,13 +1,16 @@
-from flask import Flask, request, jsonify, render_template_string
+from flask import Flask, request, jsonify, render_template_string, render_template
 import pyodbc
 from datetime import datetime
+
+import struct
+print(f'Running Python Architecture: {struct.calcsize("P") * 8} bit') # Will print 32 or 64
 
 app = Flask(__name__)
 
 # Database connection (replace with your actual database path and credentials)
 conn_str = (
     r'DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};'
-    r'DBQ=C:\Users\Wessi\GitWS\MofCafeRes\html\cafedbhtml1.accdb;'
+    r'DBQ=D:\cafedbhtml1.accdb;' # different location used to fix file is already open error while it was not open
 )
 conn = pyodbc.connect(conn_str)
 cursor = conn.cursor()
@@ -46,9 +49,8 @@ def submit_transaction():
 # Add similar routes for other forms like 'submit_inventory', 'submit_daily_summary', 'submit_employee_info'
 
 @app.route('/')
-def index():
-    # Render your HTML here
-    return render_template_string(open(r'C:\Users\Wessi\GitWS\MofCafeRes\html\cafe.html').read())
+def home():
+    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

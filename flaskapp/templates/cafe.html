@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafeteria Management System</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3pV0t7WgHSDvRZ/reiB5a9S/-OpigU9JWT4n73f6ALBonPk8F4OwvXp8p" crossorigin="anonymous">
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #e9ecef;
+        }
+
+        .header-bar {
+            background-color: #4a69bd;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        .custom-button {
+            background-color: #5cb85c;
+            color: white;
+        }
+
+        .custom-button:hover {
+            background-color: #4cae4c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <div class="header-bar mb-3">
+            <h1>Cafeteria Management System</h1>
+        </div>
+
+        <!-- Transaction Form -->
+        <div class="mb-4">
+            <h2>Transaction Entry</h2>
+            <form id="transactionForm">
+                <div class="form-group">
+                    <label for="transactionId">Transaction ID</label>
+                    <input type="text" class="form-control" id="transactionId" name="transactionId">
+                </div>
+                <div class="form-group">
+                    <label for="transactionDate">Date & Time</label>
+                    <input type="datetime-local" class="form-control" id="transactionDate" name="transactionDate">
+                </div>
+                <div class="form-group">
+                    <label for="transactionType">Transaction Type</label>
+                    <select class="form-control" id="transactionType" name="transactionType" onchange="updateCategoryOptions(this.value)">
+                        <option value="income">Income</option>
+                        <option value="expense">Expense</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select class="form-control" id="category" name="category">
+                        <!-- Options will be populated based on the transaction type -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <input type="number" class="form-control" id="amount" name="amount">
+                </div>
+                <div class="form-group">
+                    <label for="paymentMethod">Payment Method</label>
+                    <select class="form-control" id="paymentMethod" name="paymentMethod">
+                        <option value="cash">Cash</option>
+                        <option value="card">Card</option>
+                        <option value="online">Online Payment</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea class="form-control" id="description" name="description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="employeeId">Employee ID (Optional)</label>
+                    <input type="text" class="form-control" id="employeeId" name="employeeId">
+                </div>
+                <button type="submit" class="btn custom-button">Submit Transaction</button>
+            </form>
+        </div>
+
+        <!-- Inventory Management Form -->
+        <div class="mb-4">
+            <h2>Inventory Management</h2>
+            <form id="inventoryForm">
+                <div class="form-group">
+                    <label for="itemId">Item ID</label>
+                    <input type="text" class="form-control" id="itemId" name="itemId">
+                </div>
+                <div class="form-group">
+                    <label for="itemName">Item Name</label>
+                    <input type="text" class="form-control" id="itemName" name="itemName">
+                </div>
+                <div class="form-group">
+                    <label for="purchaseDate">Purchase Date</label>
+                    <input type="date" class="form-control" id="purchaseDate" name="purchaseDate">
+                </div>
+                <div class="form-group">
+                    <label for="quantity">Quantity</label>
+                    <input type="number" class="form-control" id="quantity" name="quantity">
+                </div>
+                <div class="form-group">
+                    <label for="unitCost">Unit Cost</label>
+                    <input type="number" class="form-control" id="unitCost" name="unitCost" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="totalCost">Total Cost</label>
+                    <input type="number" class="form-control" id="totalCost" name="totalCost" step="0.01">
+                </div>
+                <button type="submit" class="btn custom-button">Submit Inventory</button>
+            </form>
+        </div>
+
+        <!-- Daily Summary Form -->
+        <div class="mb-4">
+            <h2>Daily Summary</h2>
+            <form id="dailySummaryForm">
+                <div class="form-group">
+                    <label for="summaryDate">Date</label>
+                    <input type="date" class="form-control" id="summaryDate" name="summaryDate">
+                </div>
+                <div class="form-group">
+                    <label for="totalIncome">Total Income</label>
+                    <input type="number" class="form-control" id="totalIncome" name="totalIncome" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="totalExpenses">Total Expenses</label>
+                    <input type="number" class="form-control" id="totalExpenses" name="totalExpenses" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="netEarnings">Net Earnings</label>
+                    <input type="number" class="form-control" id="netEarnings" name="netEarnings" step="0.01">
+                </div>
+                <button type="submit" class="btn custom-button">Submit Summary</button>
+            </form>
+        </div>
+
+        <!-- Employee Information Form -->
+        <div class="mb-4">
+            <h2>Employee Information</h2>
+            <form id="employeeInfoForm">
+                <div class="form-group">
+                    <label for="employeeId">Employee ID</label>
+                    <input type="text" class="form-control" id="employeeId" name="employeeId">
+                </div>
+                <div class="form-group">
+                    <label for="employeeName">Name</label>
+                    <input type="text" class="form-control" id="employeeName" name="employeeName">
+                </div>
+                <div class="form-group">
+                    <label for="role">Role</label>
+                    <input type="text" class="form-control" id="role" name="role">
+                </div>
+                <div class="form-group">
+                    <label for="salary">Salary</label>
+                    <input type="number" class="form-control" id="salary" name="salary" step="0.01">
+                </div>
+                <button type="submit" class="btn custom-button">Submit Employee Info</button>
+            </form>
+        </div>
+
+        <!-- Report Generation Section -->
+        <div class="mb-4">
+            <h2>Generate Reports</h2>
+            <form id="reportGenerationForm">
+                <div class="form-group">
+                    <label for="reportType">Report Type</label>
+                    <select class="form-control" id="reportType" name="reportType">
+                        <option value="transaction">Transaction Report</option>
+                        <option value="inventory">Inventory Report</option>
+                        <option value="summary">Summary Report</option>
+                        <option value="employee">Employee Report</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="startDate">Start Date</label>
+                    <input type="date" class="form-control" id="startDate" name="startDate">
+                </div>
+                <div class="form-group">
+                    <label for="endDate">End Date</label>
+                    <input type="date" class="form-control" id="endDate" name="endDate">
+                </div>
+                <button type="submit" class="btn custom-button">Generate Report</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap and jQuery Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-Ltrj3KuG1hFfjlYyy4eTITN8zlZ6t/fCmFmBjHsEnXEljUfi7b4BxZaSZTz4iVg6" crossorigin="anonymous"></script>
+
+    <script>
+    function updateCategoryOptions(transactionType) {
+        var categorySelect = document.getElementById('category');
+        categorySelect.innerHTML = '';
+
+        var categories = [];
+        if (transactionType === 'income') {
+            categories = ['Food Sales', 'Beverage Sales', 'Other'];
+        } else if (transactionType === 'expense') {
+            categories = ['Ingredients', 'Utilities', 'Maintenance', 'Other'];
+        }
+
+        categories.forEach(function(category) {
+            var option = document.createElement('option');
+            option.value = category;
+            option.text = category;
+            categorySelect.appendChild(option);
+        });
+    }
+
+    // Initialize categories
+    window.onload = function() {
+        updateCategoryOptions(document.getElementById('transactionType').value);
+    }
+
+    document.getElementById('transactionForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+        fetch('/submit_transaction', {
+    method: 'POST',
+    body: formData
+})
+.then(response => response.json())
+.then(data => {
+    console.log(data);
+    alert(data.message);
+})
+.catch(error => {
+    console.error('Error:', error);
+    alert('An error occurred. Check the console for details.');
+});
+
+    });
+
+    // Similar AJAX calls for other forms go here
+</script>
+</body>
+</html>
